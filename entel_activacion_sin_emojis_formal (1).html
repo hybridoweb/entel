@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Entel - Activación Digital</title>
+<style>
+:root{
+  --blue:#0057FF;--blue2:#003BB3;--cyan:#00A3FF;--orange:#FF6B00;
+  --green:#12B76A;--dark:#071A3A;--text:#003A8C;--muted:#60718F;
+  --line:#DCE7F7;--soft:#F4F8FF;--white:#fff;--shadow:0 22px 60px rgba(0,49,130,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:linear-gradient(135deg,#F8FBFF,#EAF1FF);
+  color:var(--dark);display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden;
+}
+.app{
+  width:min(410px,100%);height:min(780px,calc(100vh - 18px));
+  background:#fff;border-radius:34px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;border:1px solid rgba(0,87,255,.10);
+}
+.top{background:linear-gradient(135deg,#0047D9,#0057FF 60%,#08A7F7);color:#fff;padding:18px 18px 12px}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{font-size:16px;font-weight:900;white-space:nowrap}
+.badge{font-size:10px;font-weight:900;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.16)}
+.steps{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
+.step{text-align:center;font-size:8.3px;color:rgba(255,255,255,.72);font-weight:650;line-height:1.1}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);margin:0 auto 6px}
+.step.done .dot{background:#6FF2C2}.step.active{color:#fff;font-weight:900}
+.step.active .dot{width:14px;height:14px;margin-top:-2px;background:#fff;border:4px solid rgba(255,255,255,.34)}
+.area{flex:1;min-height:0;overflow:hidden}.screen{display:none;height:100%;padding:25px 24px 18px;overflow-y:auto;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}.screen.active{display:flex;flex-direction:column;animation:enter .25s ease}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.kicker{color:var(--blue);font-size:12px;letter-spacing:3px;font-weight:950;text-transform:uppercase;margin-bottom:12px}
+h1{color:#0039B7;font-size:27px;line-height:1.08;letter-spacing:-.7px;margin-bottom:12px}
+h2{color:#0039B7;font-size:24px;line-height:1.12;letter-spacing:-.55px;margin-bottom:10px}
+h3{color:#0039B7;font-size:16px}p{color:var(--muted);font-size:15.3px;line-height:1.55}.center{text-align:center}.spacer{flex:1}
+.svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hero{
+  margin:28px auto 25px;width:84px;height:84px;border-radius:25px;
+  background:linear-gradient(135deg,#0057FF,#00A3FF);display:grid;place-items:center;
+  color:white;box-shadow:0 18px 34px rgba(0,87,255,.24)
+}
+.hero .svg{width:42px;height:42px;stroke-width:2.1}
+.note{margin:26px 0 18px;background:linear-gradient(180deg,#F8FBFF,#F4F8FF);border:1px solid var(--line);border-radius:20px;padding:18px;color:var(--muted);font-size:14.5px;line-height:1.55;text-align:center}
+.footer-mini{color:#577096;text-align:center;font-size:11px;margin-bottom:16px}
+.btns{display:grid;gap:10px;margin-top:18px}.btn-bottom{margin-top:auto;padding-top:18px}
+button{border:0;cursor:pointer;font:inherit;font-weight:900;border-radius:16px;min-height:51px;padding:13px 16px;transition:.18s ease}
+.btn-primary{color:#fff;background:linear-gradient(135deg,#0057FF,#08A7F7);box-shadow:0 15px 30px rgba(0,87,255,.22)}
+.btn-secondary{color:#0039B7;background:#fff;border:1px solid var(--line)}.btn-ghost{color:#0039B7;background:#F4F8FF}.disabled{opacity:.45;pointer-events:none}
+.list{display:grid;gap:12px;margin-top:18px}
+.item{
+  width:100%;display:flex;align-items:center;gap:14px;padding:15px 16px;min-height:84px;
+  background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 22px rgba(0,40,110,.04);text-align:left
+}
+.item:hover{border-color:#B9CCEA;transform:translateY(-1px)}
+.ico{width:42px;height:42px;border-radius:15px;background:#EEF4FF;color:var(--blue);display:grid;place-items:center;flex:0 0 auto}
+.ico.orange{background:#FFF1E8;color:var(--orange)}.ico.green{background:#EAFBF2;color:var(--green)}
+.item strong{display:block;color:#0039B7;font-size:14.5px;margin-bottom:4px}.item span{display:block;color:var(--muted);font-size:13.5px;line-height:1.45;font-weight:500}.chev{margin-left:auto;color:#0039B7;font-weight:900}
+.form{display:grid;gap:13px;margin-top:18px}label{color:#0039B7;font-size:13px;font-weight:900;margin-bottom:6px;display:block}
+input,select{width:100%;height:52px;border:1px solid var(--line);border-radius:15px;padding:0 14px;font-size:16px;color:var(--dark);background:#fff;outline:none}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,87,255,.10)}.error{display:none;color:#D92D20;font-size:12.5px;margin-top:7px;font-weight:750}
+.scan-box{
+  margin:18px auto;width:210px;height:165px;border-radius:24px;background:linear-gradient(160deg,#0048D8,#0069FF);
+  border:2px dashed rgba(255,255,255,.38);display:grid;place-items:center;position:relative;overflow:hidden;
+  box-shadow:0 14px 30px rgba(0,87,255,.20);color:#fff
+}
+.scan-box.large{width:235px;height:235px}.scan-box .svg{width:64px;height:64px;stroke:#fff;stroke-width:1.8}
+.scan-box:after{content:"";position:absolute;left:20px;right:20px;top:25px;height:3px;border-radius:99px;background:linear-gradient(90deg,transparent,#fff,transparent);opacity:0}
+.scan-box.scanning:after{opacity:1;animation:scan 1.2s ease-in-out infinite alternate}@keyframes scan{to{transform:translateY(110px)}}
+.success{display:none;margin-top:12px;padding:12px 14px;border-radius:15px;color:#048449;background:#EAFBF2;font-weight:900;text-align:center;font-size:13.5px}
+.data-card{background:#F8FBFF;border:1px solid var(--line);border-radius:22px;padding:16px 18px;margin-top:18px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10.5px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:14.3px}.row:last-child{border-bottom:0}
+.row strong{color:#0039B7;text-align:right;font-size:14.3px}.plan{position:relative;cursor:pointer;padding-right:48px}
+.radio{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;border:2px solid #C9D8F0}
+.plan.active{border-color:var(--blue);background:#F8FBFF}.plan.active .radio{border:5px solid var(--blue)}
+.bar{height:8px;border-radius:99px;background:#DCEBFF;overflow:hidden;margin:38px 0 16px}.bar-fill{height:100%;width:0;background:linear-gradient(90deg,#00A3FF,#0057FF);border-radius:99px;transition:.35s}
+.validation-center{text-align:center;margin-top:32px}.check-circle{width:74px;height:74px;border-radius:50%;margin:0 auto 14px;background:#EEF4FF;color:var(--green);display:grid;place-items:center}
+.check-circle .svg{width:42px;height:42px}.pill{display:inline-block;margin-top:12px;padding:8px 14px;border-radius:999px;background:#EAFBF2;color:#04924F;font-weight:900;font-size:13px}
+.success-icon{width:74px;height:74px;border-radius:50%;margin:8px auto 22px;background:var(--green);color:white;display:grid;place-items:center;box-shadow:0 18px 34px rgba(18,183,106,.25)}
+.success-icon .svg{width:34px;height:34px}
+.receipt{border:1px dashed #C9D8F0;border-radius:22px;padding:20px 18px;margin-top:10px}.receipt h3{color:#0039B7;text-align:center;font-size:17px;margin-bottom:6px}
+.approved{display:block;width:max-content;margin:14px auto 18px;padding:8px 16px;border-radius:999px;background:#EAFBF2;color:#04924F;font-weight:950;font-size:13px}
+.rating-grid{display:grid;gap:12px;margin-top:18px}.rating{border:1px solid var(--line);background:#F8FBFF;border-radius:18px;padding:13px}
+.rating strong{display:block;color:#0039B7;font-size:13.5px;margin-bottom:10px}.stars{display:flex;gap:8px}.star{width:34px;height:34px;border-radius:11px;background:#fff;border:1px solid var(--line);color:#0039B7;font-weight:950}.star.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+@media(max-height:740px){.app{height:calc(100vh - 10px);border-radius:28px}.top{padding:14px 16px 10px}.screen{padding:20px 22px 14px}h1{font-size:25px}h2{font-size:22px}p{font-size:14.5px}.hero{width:72px;height:72px;margin:18px auto 20px}.note{margin:18px 0 12px;padding:14px}.item{min-height:76px;padding:12px 14px}button{min-height:47px}.scan-box.large{width:205px;height:205px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top"><div class="top-row"><div class="brand">Entel · Activación Digital</div><div class="badge">SEGURO</div></div><div class="steps" id="steps"></div></header>
+<div class="area">
+
+<section class="screen active" id="home" data-step="1">
+  <div class="hero" id="heroIcon"></div>
+  <h1 class="center">Activación Digital Biométrica</h1>
+  <p class="center">Activa tu línea de forma segura desde tu celular</p>
+  <div class="note">Proceso rápido y seguro, disponible 24/7. Valida tu SIM, confirma tu identidad y activa tu línea sin salir de casa.</div>
+  <div class="spacer"></div><div class="footer-mini">Servicio de activación digital</div>
+  <div class="btns"><button class="btn-primary" onclick="go('simOptions')">Iniciar activación</button></div>
+</section>
+
+<section class="screen" id="simOptions" data-step="2">
+  <div class="kicker">Paso 1 de 7</div><h2>Obtén tu SIM Entel</h2><p>Para activar una línea nueva, necesitas una SIM adquirida por un canal autorizado.</p>
+  <div class="list">
+    <button class="item" onclick="chooseChannel('SIM propia')"><div class="ico" data-icon="sim"></div><div><strong>Ya tengo una SIM</strong><span>Escanea el código de tu SIM para continuar.</span></div><div class="chev">›</div></button>
+    <button class="item" onclick="go('stores')"><div class="ico orange" data-icon="pin"></div><div><strong>Buscar tienda cercana</strong><span>Encuentra una tienda Entel o punto autorizado.</span></div><div class="chev">›</div></button>
+    <button class="item" onclick="go('delivery')"><div class="ico green" data-icon="truck"></div><div><strong>Solicitar SIM a domicilio</strong><span>Recíbela en la dirección indicada y actívala desde la app.</span></div><div class="chev">›</div></button>
+  </div><div class="spacer"></div>
+</section>
+
+<section class="screen" id="stores" data-step="2">
+  <div class="kicker">Canal autorizado</div><h2>Tiendas cercanas</h2><p>Selecciona un punto autorizado para adquirir tu SIM.</p>
+  <div class="list">
+    <button class="item" onclick="selectStore('Entel Centro Comercial')"><div class="ico orange" data-icon="pin"></div><div><strong>Entel Centro Comercial</strong><span>Av. Principal 123 · 0.8 km</span></div><div class="chev">›</div></button>
+    <button class="item" onclick="selectStore('Entel Av. Principal')"><div class="ico orange" data-icon="pin"></div><div><strong>Entel Av. Principal</strong><span>Av. Principal 450 · 1.4 km</span></div><div class="chev">›</div></button>
+    <button class="item" onclick="selectStore('Punto Autorizado Entel')"><div class="ico orange" data-icon="pin"></div><div><strong>Punto Autorizado Entel</strong><span>Calle Los Olivos 210 · 2.1 km</span></div><div class="chev">›</div></button>
+  </div><div class="success" id="storeOk">Tienda seleccionada correctamente</div><div class="spacer"></div>
+  <div class="btns"><button id="storeNext" class="btn-primary disabled" onclick="go('simVerify')">Ya compré mi SIM</button><button class="btn-secondary" onclick="go('simOptions')">Volver</button></div>
+</section>
+
+<section class="screen" id="delivery" data-step="2">
+  <div class="kicker">Entrega a domicilio</div><h2>Delivery de SIM</h2><p>Registra los datos de entrega para recibir tu SIM.</p>
+  <div class="form">
+    <div><label>Dirección de entrega</label><input id="delAddress" placeholder="Av. Principal 123"><div class="error" id="delAddressError">La dirección es obligatoria.</div></div>
+    <div><label>Referencia</label><input id="delRef" placeholder="Frente a la farmacia"></div>
+    <div><label>Horario de entrega</label><select id="delTime"><option value="">Selecciona un horario</option><option>Mañana</option><option>Tarde</option><option>Noche</option></select><div class="error" id="delTimeError">Selecciona un horario.</div></div>
+  </div>
+  <div class="success" id="delOk">Solicitud registrada correctamente</div>
+  <div class="data-card" id="delSummary" style="display:none"><div class="row"><span>Dirección</span><strong id="delAddressView">-</strong></div><div class="row"><span>Horario</span><strong id="delTimeView">-</strong></div><div class="row"><span>Estado</span><strong>Pendiente de entrega</strong></div></div>
+  <div class="spacer"></div><div class="btns"><button class="btn-primary" onclick="registerDelivery()">Solicitar SIM</button><button id="delNext" class="btn-ghost disabled" onclick="go('simVerify')">Ya recibí mi SIM</button><button class="btn-secondary" onclick="go('simOptions')">Volver</button></div>
+</section>
+
+<section class="screen" id="simVerify" data-step="2">
+  <div class="kicker">Paso 2 de 7</div><h2>Verificación de SIM</h2><p>Escanea el código de la tarjeta SIM para continuar.</p>
+  <div class="scan-box" id="simScan" data-icon-box="sim"></div>
+  <div class="form"><div><label>Código ICCID o número de SIM</label><input id="simCode" inputmode="numeric" maxlength="20" placeholder="Ej. 8951000012345678901"><div class="error" id="simError">Ingresa entre 18 y 20 dígitos.</div></div></div>
+  <div class="success" id="simOk">SIM verificada correctamente</div><div class="spacer"></div>
+  <div class="btns"><button class="btn-secondary" onclick="autoScanSIM()">Escanear automáticamente</button><button class="btn-primary" onclick="verifySIM()">Verificar SIM</button><button id="simNext" class="btn-primary disabled" onclick="continueDNI()">Continuar con DNI</button></div>
+</section>
+
+<section class="screen" id="dniScreen" data-step="3">
+  <div class="kicker">Paso 3 de 7</div><h2>Validación de DNI</h2><p>Ingresa tu documento para confirmar tu identidad.</p>
+  <div class="form"><div><label>DNI</label><input id="dni" inputmode="numeric" maxlength="8" placeholder="Ej. 74941283"><div class="error" id="dniError">El DNI debe tener 8 dígitos.</div></div></div>
+  <div class="spacer"></div><div class="btns"><button class="btn-primary" onclick="validateDNI()">Validar DNI</button><button class="btn-secondary" onclick="go('simVerify')">Volver</button></div>
+</section>
+
+<section class="screen" id="dataScreen" data-step="4">
+  <div class="kicker">Paso 4 de 7</div><h2>Confirma tus datos</h2><p>Verifica que la información sea correcta antes de continuar.</p>
+  <div class="data-card"><div class="row"><span>Nombre</span><strong id="viewName">-</strong></div><div class="row"><span>DNI</span><strong id="viewDni">-</strong></div><div class="row"><span>Operador</span><strong>Entel</strong></div></div>
+  <div style="height:16px"></div><label>Selecciona tu plan</label>
+  <div class="list">
+    <button class="item plan active" data-plan="Plan Básico" onclick="selectPlan(this)"><div><strong>Plan Básico</strong><span>S/ 29.90 / mes</span></div><div class="radio"></div></button>
+    <button class="item plan" data-plan="Plan Control" onclick="selectPlan(this)"><div><strong>Plan Control</strong><span>S/ 49.90 / mes</span></div><div class="radio"></div></button>
+    <button class="item plan" data-plan="Plan Ilimitado" onclick="selectPlan(this)"><div><strong>Plan Ilimitado</strong><span>S/ 79.90 / mes</span></div><div class="radio"></div></button>
+  </div><div class="spacer"></div><div class="btns"><button class="btn-primary" onclick="go('faceScreen')">Continuar a validación facial</button></div>
+</section>
+
+<section class="screen" id="faceScreen" data-step="5">
+  <div class="kicker">Paso 5 de 7</div><h2>Reconocimiento facial</h2><p>Coloca tu rostro dentro del recuadro para continuar.</p>
+  <div class="scan-box large" id="faceScan" data-icon-box="face"></div><div class="success" id="faceOk">Rostro capturado correctamente</div>
+  <div class="spacer"></div><div class="btns"><button id="faceBtn" class="btn-primary" onclick="captureFace()">Capturar rostro</button><button id="faceNext" class="btn-primary disabled" onclick="go('validateScreen')">Continuar</button></div>
+</section>
+
+<section class="screen" id="validateScreen" data-step="6">
+  <div class="kicker">Paso 6 de 7</div><h2>Validando identidad</h2><p>Estamos verificando tu identidad...</p>
+  <div class="bar"><div class="bar-fill" id="valBar"></div></div><p class="center" id="valStatus">Validación en proceso</p>
+  <div class="validation-center" id="valResult" style="display:none"><div class="check-circle" data-icon-box="check"></div><h3>Identidad validada correctamente</h3><div class="pill">Coincidencia biométrica: 98%</div></div>
+  <div class="spacer"></div><div class="btns"><button id="activateBtn" class="btn-primary disabled" onclick="activateLine()">Activar línea</button></div>
+</section>
+
+<section class="screen" id="successScreen" data-step="7">
+  <div class="success-icon" data-icon-box="phone"></div><h1 class="center">Línea activada exitosamente</h1>
+  <div class="data-card"><div class="row"><span>Nombre</span><strong id="okName">-</strong></div><div class="row"><span>DNI</span><strong id="okDni">-</strong></div><div class="row"><span>Plan</span><strong id="okPlan">-</strong></div><div class="row"><span>Número de línea</span><strong id="okPhone">-</strong></div><div class="row"><span>Fecha y hora</span><strong id="okDate">-</strong></div><div class="row"><span>Código de operación</span><strong id="okOperation">-</strong></div></div>
+  <div class="spacer"></div><div class="btns"><button class="btn-primary" onclick="go('receiptScreen')">Ver constancia digital</button></div>
+</section>
+
+<section class="screen" id="receiptScreen" data-step="8">
+  <div class="receipt"><h3>Constancia Digital de Activación</h3><p class="center" style="font-size:13px">Comprobante de activación</p><span class="approved">Activación aprobada</span>
+    <div class="row"><span>Nombre</span><strong id="rcName">-</strong></div><div class="row"><span>DNI</span><strong id="rcDni">-</strong></div><div class="row"><span>Operador</span><strong>Entel</strong></div><div class="row"><span>Código SIM / ICCID</span><strong id="rcSim">-</strong></div><div class="row"><span>Canal de obtención</span><strong id="rcChannel">-</strong></div><div class="row"><span>Plan</span><strong id="rcPlan">-</strong></div><div class="row"><span>Número de línea</span><strong id="rcPhone">-</strong></div><div class="row"><span>Código de operación</span><strong id="rcOperation">-</strong></div><div class="row"><span>Fecha y hora</span><strong id="rcDate">-</strong></div><div class="row"><span>Estado</span><strong style="color:#04924F">Activación aprobada</strong></div>
+  </div>
+  <div class="btns"><button class="btn-secondary" onclick="window.print()">Imprimir constancia</button><button class="btn-primary" onclick="go('feedbackScreen')">Continuar a retroalimentación</button><button class="btn-ghost" onclick="resetFlow()">Nueva activación</button></div>
+</section>
+
+<section class="screen" id="feedbackScreen" data-step="8">
+  <div class="kicker">Experiencia</div><h2>Califica el servicio</h2><p>Tu evaluación ayuda a mejorar la experiencia de activación.</p>
+  <div class="rating-grid"><div class="rating"><strong>Facilidad de uso</strong><div class="stars" data-rate="facilidad"></div></div><div class="rating"><strong>Claridad del proceso</strong><div class="stars" data-rate="claridad"></div></div><div class="rating"><strong>Seguridad percibida</strong><div class="stars" data-rate="seguridad"></div></div><div class="rating"><strong>Rapidez</strong><div class="stars" data-rate="rapidez"></div></div></div>
+  <div class="success" id="fbOk">Gracias por tu calificación</div><div class="spacer"></div><div class="btns"><button class="btn-primary" onclick="sendFeedback()">Enviar calificación</button><button class="btn-secondary" onclick="resetFlow()">Nueva activación</button></div>
+</section>
+
+</div></main>
+
+<script>
+const icons={
+shield:'<svg class="svg" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-5"/></svg>',
+sim:'<svg class="svg" viewBox="0 0 24 24"><path d="M7 3h7l3 3v15H7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h2M13 16h2"/></svg>',
+pin:'<svg class="svg" viewBox="0 0 24 24"><path d="M12 21s6-5.2 6-11a6 6 0 0 0-12 0c0 5.8 6 11 6 11z"/><circle cx="12" cy="10" r="2.4"/></svg>',
+truck:'<svg class="svg" viewBox="0 0 24 24"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+face:'<svg class="svg" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="12" r="4"/><path d="M10 12h.01M14 12h.01M10.5 14.5c1 .8 2 .8 3 0"/></svg>',
+check:'<svg class="svg" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+phone:'<svg class="svg" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+id:'<svg class="svg" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path d="M14 10h4M14 14h3"/></svg>'
+};
+const labels=["Inicio","SIM","DNI","Datos","Biometría","Validación","Activación","Constancia"];
+const state={simCode:"",simVerified:false,simChannel:"",store:"",dni:"",name:"",plan:"Plan Básico",phone:"",date:"",operation:"",validated:false};
+document.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("heroIcon").innerHTML=icons.shield;
+  document.querySelectorAll("[data-icon]").forEach(x=>x.innerHTML=icons[x.dataset.icon]);
+  document.querySelectorAll("[data-icon-box]").forEach(x=>x.innerHTML=icons[x.dataset.iconBox]);
+  renderSteps(1); ratings(); onlyNums("dni",8); onlyNums("simCode",20);
+});
+function renderSteps(active){document.getElementById("steps").innerHTML=labels.map((x,i)=>`<div class="step ${i+1<active?'done':i+1===active?'active':''}"><div class="dot"></div>${x}</div>`).join("")}
+function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));const s=document.getElementById(id);s.classList.add("active");renderSteps(+s.dataset.step);if(id==="validateScreen"&&!state.validated)validateIdentity()}
+function onlyNums(id,max){document.getElementById(id).addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,max)})}
+function chooseChannel(c){state.simChannel=c;go("simVerify")}
+function selectStore(s){state.store=s;state.simChannel="Tienda autorizada";document.getElementById("storeOk").style.display="block";document.getElementById("storeNext").classList.remove("disabled")}
+function registerDelivery(){let a=delAddress.value.trim(),t=delTime.value;delAddressError.style.display=a?"none":"block";delTimeError.style.display=t?"none":"block";if(!a||!t)return;state.simChannel="Delivery";delAddressView.textContent=a;delTimeView.textContent=t;delSummary.style.display="block";delOk.style.display="block";delNext.classList.remove("disabled")}
+function autoScanSIM(){simScan.classList.add("scanning");setTimeout(()=>{simScan.classList.remove("scanning");const c="89510"+Array.from({length:14},()=>Math.floor(Math.random()*10)).join("");simCode.value=c;setSIM(c)},1050)}
+function verifySIM(){let c=simCode.value.trim();if(!/^\d{18,20}$/.test(c)){simError.style.display="block";return}setSIM(c)}
+function setSIM(c){state.simCode=c;state.simVerified=true;if(!state.simChannel)state.simChannel="SIM propia";simError.style.display="none";simOk.style.display="block";simNext.classList.remove("disabled")}
+function continueDNI(){if(state.simVerified)go("dniScreen")}
+function validateDNI(){let d=dni.value.trim();if(!/^\d{8}$/.test(d)){dniError.style.display="block";return}state.dni=d;state.name=["Luis Alberto Rojas","María Fernanda Torres","Carlos Eduardo Medina","Valeria Andrea Salazar","José Miguel Vargas","Lucía Gabriela Castro","Diego Fernando Herrera","Camila Alejandra Ramos","Grecia Núñez Silva","Sofía Daniela Mendoza"][+d[7]];viewName.textContent=state.name;viewDni.textContent=d;go("dataScreen")}
+function selectPlan(b){document.querySelectorAll(".plan").forEach(x=>x.classList.remove("active"));b.classList.add("active");state.plan=b.dataset.plan}
+function captureFace(){faceScan.classList.add("scanning");faceBtn.classList.add("disabled");setTimeout(()=>{faceScan.classList.remove("scanning");faceOk.style.display="block";faceNext.classList.remove("disabled")},1100)}
+function validateIdentity(){let p=0;valBar.style.width="0%";let t=setInterval(()=>{p+=20;valBar.style.width=p+"%";if(p>=100){clearInterval(t);state.validated=true;valStatus.textContent="Validación completada";valResult.style.display="block";activateBtn.classList.remove("disabled")}},250)}
+function activateLine(){state.phone="9"+Array.from({length:8},()=>Math.floor(Math.random()*10)).join("");state.operation="OP-"+Math.random().toString(36).substring(2,5).toUpperCase()+"-"+Math.floor(1000+Math.random()*9000);state.date=new Date().toLocaleString("es-PE",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});fill();go("successScreen")}
+function fill(){let m={okName:state.name,okDni:state.dni,okPlan:state.plan,okPhone:state.phone,okDate:state.date,okOperation:state.operation,rcName:state.name,rcDni:state.dni,rcSim:state.simCode,rcChannel:state.simChannel,rcPlan:state.plan,rcPhone:state.phone,rcOperation:state.operation,rcDate:state.date};Object.entries(m).forEach(([k,v])=>document.getElementById(k).textContent=v||"-")}
+function ratings(){document.querySelectorAll(".stars").forEach(g=>{for(let i=1;i<=5;i++){let b=document.createElement("button");b.className="star";b.textContent=i;b.onclick=()=>[...g.children].forEach((x,n)=>x.classList.toggle("active",n<i));g.appendChild(b)}})}
+function sendFeedback(){fbOk.style.display="block"}function resetFlow(){location.reload()}
+</script>
+</body>
+</html>
