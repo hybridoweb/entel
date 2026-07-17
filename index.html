@@ -27,18 +27,14 @@ body{
   background:#fff;border-radius:30px;box-shadow:var(--shadow);overflow:hidden;
   display:flex;flex-direction:column;border:1px solid rgba(0,87,255,.10);
 }
-.top{background:linear-gradient(135deg,#003BB3,#0057FF 62%,#08A7F7);color:#fff;padding:16px 18px 11px}
-.top-row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:14px}
+.top{background:linear-gradient(135deg,#003BB3,#0057FF 62%,#08A7F7);color:#fff;padding:16px 18px 13px}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:12px}
 .brand{font-size:15px;font-weight:900;white-space:nowrap;flex:1}
 .top-nav{width:38px;height:38px;min-height:38px;padding:0;border-radius:13px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;box-shadow:none}
 .top-nav .svg{width:19px;height:19px}
 .badge{font-size:10px;font-weight:900;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.16)}
-.steps{display:grid;grid-template-columns:repeat(9,minmax(32px,1fr));gap:2px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.steps::-webkit-scrollbar{display:none}
-.step{min-width:32px;text-align:center;font-size:7.4px;color:rgba(255,255,255,.72);font-weight:700;line-height:1.1}
-.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);margin:0 auto 6px}
-.step.done .dot{background:#6FF2C2}.step.active{color:#fff;font-weight:900}
-.step.active .dot{width:14px;height:14px;margin-top:-2px;background:#fff;border:4px solid rgba(255,255,255,.34)}
+.steps{height:6px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}
+.step-progress{height:100%;width:0;border-radius:inherit;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.18),0 8px 18px rgba(255,255,255,.22);transition:width .28s ease}
 .area{flex:1;min-height:0;overflow:hidden}.screen{display:none;height:100%;padding:22px 22px 16px;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .screen>*{flex-shrink:0}.spacer{flex:1 1 auto}
 .screen::-webkit-scrollbar{display:none}.screen.active{display:flex;flex-direction:column;animation:enter .25s ease}
@@ -110,8 +106,8 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,87
   .receipt{max-width:none}
 }
 @media(max-width:380px){
-  body{padding:8px;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.app{height:100%;border-radius:24px}.top{padding:14px 13px 9px}.brand{font-size:14px}.badge{padding:6px 8px}
-  .screen{padding:18px 17px 13px}.step{font-size:6.6px}.dot{width:8px;height:8px}.step.active .dot{width:12px;height:12px;border-width:3px}
+  body{padding:8px;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.app{height:100%;border-radius:24px}.top{padding:14px 13px 11px}.brand{font-size:14px}.badge{padding:6px 8px}
+  .screen{padding:18px 17px 13px}
   h1{font-size:24px}h2{font-size:21px}p{font-size:14px}.item{min-height:68px;padding:11px 12px}.scan-box.large{width:196px;height:196px}.star{width:32px;height:32px}
 }
 @media(max-height:740px){.app{height:100%;border-radius:26px}.top{padding:13px 15px 9px}.screen{padding:18px 20px 13px}h1{font-size:25px}h2{font-size:21px}p{font-size:14.5px}.hero{width:70px;height:70px;margin:14px auto 16px}.item{min-height:66px;padding:10px 12px}button{min-height:45px}.map-frame{height:132px}.store-results{max-height:170px}.scan-box.large{width:196px;height:196px}.data-card{padding:12px 14px}.row{padding:7px 0}.section-gap{height:8px}.rating-grid{gap:8px;margin-top:12px}.rating{padding:10px}.receipt{padding:13px}.approved{margin:9px auto 12px}.stars{gap:6px}.star{width:32px;height:32px}}
@@ -330,7 +326,7 @@ function restoreSavedFlow(draft){restoringDraft=true;Object.assign(state,draft.s
 function resumeSavedFlow(){const draft=savedDraft||readSavedDraft();if(!hasDraftProgress(draft)){startNewFlow();return}restoreSavedFlow(draft);go(draft.screen&&draft.screen!=="home"?draft.screen:"simOptions",false)}
 function channelLabel(){if(state.store)return "Tienda autorizada";if(state.simChannel==="Delivery")return "Delivery";return state.simChannel||"SIM propia"}
 function channelDetail(){if(state.store)return `Tienda autorizada - ${state.store}${state.storePickupTime?` - Recojo ${state.storePickupTime}`:""}${state.storePickedUp?" - SIM recogida":""}`;if(state.simChannel==="Delivery")return state.deliveryTime?`Delivery - ${state.deliveryTime}${state.deliveryReceived?" - SIM recibida":""}`:"Delivery";return state.simChannel||"SIM propia"}
-function renderSteps(active){document.getElementById("steps").innerHTML=labels.map((x,i)=>`<div class="step ${i+1<active?'done':i+1===active?'active':''}"><div class="dot"></div>${x}</div>`).join("")}
+function renderSteps(active){const total=labels.length;const pct=Math.max(1,Math.min(total,active))/total*100;document.getElementById("steps").innerHTML=`<div class="step-progress" role="progressbar" aria-valuemin="1" aria-valuemax="${total}" aria-valuenow="${active}" aria-label="Progreso de activación" style="width:${pct}%"></div>`}
 function go(id,remember=true){const current=document.querySelector(".screen.active");if(current&&current.id!==id){if(current.id==="simVerify")stopCamera("sim");if(current.id==="faceScreen")stopCamera("face")}if(remember&&current&&current.id!==id)state.history.push(current.id);document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));const s=document.getElementById(id);s.classList.add("active");s.scrollTop=0;renderSteps(+s.dataset.step);updateTopNav();if(id==="validateScreen"&&!state.validated&&!state.validating)validateIdentity();if(id==="validateScreen"&&state.validated)setButtonState("activateBtn",true);saveDraft()}
 function goBack(){if(!state.history.length)return;const previous=state.history.pop();go(previous,false)}
 function onlyNums(id,max){document.getElementById(id).addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,max)})}
